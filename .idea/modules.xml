@@ -3,6 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/War-Zone.iml" filepath="$PROJECT_DIR$/.idea/War-Zone.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Labs/Lab7/alien_invasion/.idea/alien_invasion.iml" filepath="$PROJECT_DIR$/../Labs/Lab7/alien_invasion/.idea/alien_invasion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../jumpshooter/.idea/jumpshooter.iml" filepath="$PROJECT_DIR$/../jumpshooter/.idea/jumpshooter.iml" />
       <module fileurl="file://$PROJECT_DIR$/../Labs/pirategame/.idea/pirategame.iml" filepath="$PROJECT_DIR$/../Labs/pirategame/.idea/pirategame.iml" />
     </modules>
   </component>
