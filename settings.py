@@ -8,6 +8,7 @@ class Settings:
         self.TILE_TYPES = 21
         self.MAX_LEVEL = 2
         self.screen_scroll = 0
+        self.bg_scroll = 0
         self.level = 1
         self.start_game = False
         self.start_intro = False
