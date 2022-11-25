@@ -1,6 +1,7 @@
 import pygame
 import os
 import random
+from pygame.sprite import Sprite
 pygame.init()
 
 SCREEN_WIDTH = 800
@@ -42,20 +43,32 @@ grenade_thrown = False
 # define colors
 BG = (144, 201, 120)
 RED = (255, 0, 0,)
-WHITE= (255,255,255)
+WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 
-#define font
+# define font
 font = pygame.font.SysFont('Futura', 30)
+
 
 def draw_text(text, font, tet_col, x, y):
     img = font.render(text, True, tet_col)
     screen.blit(img, (x, y))
 
+
 def draw_bg():
     screen.fill(BG)
     pygame.draw.line(screen, RED, (0, 300), (SCREEN_WIDTH, 300))
+    bg_img = pygame.image.load('images/background/city.png')
+    screen.blit(bg_img, (0,1))
+
+
+#class Tiles(pygame.sprite.Sprite):
+    #def __init__(self):
+        #pygame.sprite.Sprite.__init__(self)
+        #self.image = pygame.surface.Surface((120, 120))
+        #self.image.blit(pygame.image.load("images/Tile/0.png"), ((0,300), (SCREEN_WIDTH, 300))
+        #self.image.blit(pygame.image.load("images/Tile/1.png"), ((0, 300), (SCREEN_WIDTH, 300))
 
 
 class Soldiers(pygame.sprite.Sprite):
@@ -79,10 +92,10 @@ class Soldiers(pygame.sprite.Sprite):
         self.animation_list = []
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
-        #create ai specific varaibles
+        # create ai specific varaibles
         self.move_counter = 0
-        self.vision  = pygame.Rect(0,0, 150, 20 )
-        #idling is random occurance
+        self.vision = pygame.Rect(0, 0, 150, 20)
+        # idling is random occurance
         self.idling = False
         self.idling_counter = 0
 
@@ -148,16 +161,16 @@ class Soldiers(pygame.sprite.Sprite):
             # when it shoots it will reduce by 1
             self.ammo -= 1
 
-    def ai(self): #making zombies move by itself
+    def ai(self):  # making zombies move by itself
 
         if self.alive and player.alive:
             if self.idling == False and random.randint(1, 200) == 1:
                 self.update_action(0)
                 self.idling = True
                 self.idling_counter = 50
-        #cehck if the ai is near the player
+            # cehck if the ai is near the player
             if self.vision.colliderect(player.rect):
-                #stop running and face the player
+                # stop running and face the player
                 self.update_action(0)
 
             else:
@@ -169,11 +182,10 @@ class Soldiers(pygame.sprite.Sprite):
                         ai_moving_right = False
                     ai_moving_left = not ai_moving_right
                     self.move(ai_moving_left, ai_moving_right)
-                    self.update_action(1) #1: run
+                    self.update_action(1)  # 1: run
                     self.move_counter += 1
-                    #update ai vision as zombies move
+                    # update ai vision as zombies move
                     self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
-                    
 
                     if self.move_counter > TILE_SIZE:
                         self.direction *= -1
@@ -182,8 +194,6 @@ class Soldiers(pygame.sprite.Sprite):
                     self.idling_counter -= 1
                     if self.idling_counter <= 0:
                         self.idling = False
-
-
 
     def update_animation(self):
         # time animation to move the picture
@@ -219,7 +229,6 @@ class Soldiers(pygame.sprite.Sprite):
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
 
-
 class ItemBox(pygame.sprite.Sprite):
     def __init__(self, item_type, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -243,6 +252,7 @@ class ItemBox(pygame.sprite.Sprite):
             # delete the item box
             self.kill()
 
+
 class HealthBar():
     def __init__(self, x, y, health, max_health):
         self.x = x
@@ -251,11 +261,11 @@ class HealthBar():
         self.max_health = max_health
 
     def draw(self, health):
-        #updates with new health
+        # updates with new health
         self.health = health
-        #calculate the ratio so it updates the health
-        ratio = self.health/self.max_health
-        pygame.draw.rect(screen, BLACK, (self.x - 2 , self.y - 2, 154, 24))
+        # calculate the ratio so it updates the health
+        ratio = self.health / self.max_health
+        pygame.draw.rect(screen, BLACK, (self.x - 2, self.y - 2, 154, 24))
         pygame.draw.rect(screen, RED, (self.x, self.y, 150, 20))
         pygame.draw.rect(screen, GREEN, (self.x, self.y, 150 * ratio, 20))
 
@@ -366,8 +376,9 @@ bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 item_box_group = pygame.sprite.Group()
+#Tiles_group = pygame.sprite.Group()
 
-#temo create item boxes
+# temo create item boxes
 
 item_box = ItemBox('Health', 100, 260)
 item_box_group.add(item_box)
@@ -377,8 +388,7 @@ item_box = ItemBox('Grenade', 500, 260)
 item_box_group.add(item_box)
 
 player = Soldiers('player', 200, 200, 0.6, 5, 20, 5)
-health_bar = HealthBar(10,10, player.health, player.health)
-
+health_bar = HealthBar(10, 10, player.health, player.health)
 
 enemy = Soldiers('enemy', 500, 200, 0.6, 3, 20, 0)
 enemy2 = Soldiers('enemy', 300, 200, 0.6, 3, 20, 0)
@@ -390,16 +400,15 @@ while run:
 
     clock.tick(FPS)
     draw_bg()
-    #show health bar
+    # show health bar
     health_bar.draw(player.health)
-    #show ammo, health and grenade
+    # show ammo, health and grenade
     draw_text(f'Ammo:{player.ammo} ', font, WHITE, 10, 35)
 
     draw_text('Grenade: ', font, WHITE, 10, 60)
-    #shows grenades in pictures rather than in numbers
+    # shows grenades in pictures rather than in numbers
     for x in range(player.grenades):
-        screen.blit(grenade_img, (110 +(x * 13), 55))
-
+        screen.blit(grenade_img, (110 + (x * 13), 55))
 
     player.update()
     player.draw()
@@ -414,10 +423,13 @@ while run:
     grenade_group.update()
     explosion_group.update()
     item_box_group.update()
+    #Tiles_group.update()
+
     bullet_group.draw(screen)
     grenade_group.draw(screen)
     explosion_group.draw(screen)
     item_box_group.draw(screen)
+    #Tiles_group.draw(screen)
 
 
     # update player actions
