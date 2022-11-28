@@ -60,15 +60,26 @@ def draw_bg():
     screen.fill(BG)
     pygame.draw.line(screen, RED, (0, 300), (SCREEN_WIDTH, 300))
     bg_img = pygame.image.load('images/background/city.png')
+    tile_1 = pygame.image.load('images/tile/1.png')
+    tile_2 = pygame.image.load('images/tile/2.png')
+
     screen.blit(bg_img, (0,1))
+    screen.blit(tile_1, (000,300))
+    screen.blit(tile_2, (70, 300))
+    screen.blit(tile_2, (140, 300))
+    screen.blit(tile_2, (210, 300))
+    screen.blit(tile_2, (280, 300))
+    screen.blit(tile_2, (350, 300))
+    screen.blit(tile_2, (420, 300))
+    screen.blit(tile_2, (490, 300))
+    screen.blit(tile_2, (560, 300))
+    screen.blit(tile_2, (630, 300))
+    screen.blit(tile_2, (700, 300))
+    screen.blit(tile_2, (770, 300))
 
 
-#class Tiles(pygame.sprite.Sprite):
-    #def __init__(self):
-        #pygame.sprite.Sprite.__init__(self)
-        #self.image = pygame.surface.Surface((120, 120))
-        #self.image.blit(pygame.image.load("images/Tile/0.png"), ((0,300), (SCREEN_WIDTH, 300))
-        #self.image.blit(pygame.image.load("images/Tile/1.png"), ((0, 300), (SCREEN_WIDTH, 300))
+
+
 
 
 class Soldiers(pygame.sprite.Sprite):
@@ -168,10 +179,11 @@ class Soldiers(pygame.sprite.Sprite):
                 self.update_action(0)
                 self.idling = True
                 self.idling_counter = 50
-            # cehck if the ai is near the player
+            # check if the ai is near the player
             if self.vision.colliderect(player.rect):
                 # stop running and face the player
                 self.update_action(0)
+                self.shoot()
 
             else:
 
@@ -391,9 +403,12 @@ player = Soldiers('player', 200, 200, 0.6, 5, 20, 5)
 health_bar = HealthBar(10, 10, player.health, player.health)
 
 enemy = Soldiers('enemy', 500, 200, 0.6, 3, 20, 0)
-enemy2 = Soldiers('enemy', 300, 200, 0.6, 3, 20, 0)
+enemy2 = Soldiers('enemy', 600, 200, 0.6, 3, 20, 0)
+
+
 enemy_group.add(enemy)
 enemy_group.add(enemy2)
+
 
 run = True
 while run:
