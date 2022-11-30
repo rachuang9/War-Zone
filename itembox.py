@@ -39,7 +39,7 @@ class ItemBox(pygame.sprite.Sprite):
             elif self.item_type == 'Ammo':
                 player.ammo += 15
             elif self.item_type == 'Grenade':
-                player.grenade += 3
+                player.num_grenades += 3
             # delete the item box
             self.kill()
 

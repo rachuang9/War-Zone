@@ -35,7 +35,7 @@ class Grenade(pygame.sprite.Sprite):
         if self.rect.left + dx < 0 or self.rect.right + dx > settings.SCREEN_WIDTH:
             self.direction *= -1
             dx = self.direction * self.speed
-        # update grenade position
+        # update num_grenades position
         self.rect.x += dx
         self.rect.y += dy
 

@@ -23,6 +23,6 @@ BLACK = (0, 0, 0)
         # self.moving_left = False
         # self.moving_right = False
         # self.shoot = False
-        # self.grenade = False
+        # self.num_grenades = False
         # self.grenade_thrown = False
 

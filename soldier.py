@@ -6,24 +6,26 @@ import random
 from bullets import Bullet
 from grenade import Grenade
 
-#mixer.init()
-#bullet_noise = pygame.mixer.Sound('sound/shot.wav')
-#bullet_noise.set_volume(.05)
+
+# mixer.init()
+# bullet_noise = pygame.mixer.Sound('sound/shot.wav')
+# bullet_noise.set_volume(.05)
 
 class Soldier(pygame.sprite.Sprite):
-    def __init__(self, char_type, x, y, scale, speed, ammo, grenade):
+    def __init__(self, char_type, x, y, scale, speed, ammo, num_grenades):
         super().__init__()
         self.moving_left = False
         self.moving_right = False
         self.shooting = False
-        self.grenade_thrown = False
         self.alive = True
         self.char_type = char_type
         self.speed = speed
         self.ammo = ammo
         self.start_ammo = ammo
         self.shoot_cooldown = 0
-        self.grenade = grenade
+        self.num_grenades = num_grenades
+        self.throwing_grenade = False
+        self.grenade_thrown = False
         self.health = 100
         self.max_health = self.health
         self.direction = 1
@@ -37,7 +39,7 @@ class Soldier(pygame.sprite.Sprite):
         self.update_time = pygame.time.get_ticks()
         # create ai specific varaibles
         self.move_counter = 0
-        #self.vision = pygame.Rect(0, 0, 150, 20)
+        # self.vision = pygame.Rect(0, 0, 150, 20)
         # idling is random occurance
         self.idling = False
         self.idling_counter = 0
@@ -56,17 +58,25 @@ class Soldier(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def update(self, bullet_group, grenade_group):
+        if self.in_air:
+            self.update_action(2)  # make it jump
+        elif self.moving_left or self.moving_right:
+            self.update_action(1)  # make it walk
+        else:
+            self.update_action(0)  # make it stand
+
         self.update_animation()
         self.check_alive()
         self.move()
-
 
         # update cooldown
         if self.shoot_cooldown > 0:
             self.shoot_cooldown -= 1
         if self.shooting:
             self.shoot(bullet_group)
-
+        if self.throwing_grenade and self.num_grenades > 0:
+            self.throw_grenade(grenade_group)
+            self.throwing_grenade = False
 
 
     def move(self):
@@ -81,22 +91,12 @@ class Soldier(pygame.sprite.Sprite):
             dx = self.speed
 
         else:
-            dx = 0 # don't move, neither is true
-
+            dx = 0  # don't move, neither is true
 
         if self.moving_left and self.moving_right:
             print(f"{self.char_type} wierd! both are true")
-        # if self.moving_left and self.rect.left > 2:
-        #     dx = -self.speed
-        #     self.flip = True
-        #     self.direction = -1
-        #
-        # if self.moving_right and self.rect.right < 795:
-        #     dx = self.speed
-        #     self.flip = False
-        #     self.direction = 1
 
-        if self.jump == True and self.in_air == False:
+        if self.jump and not self.in_air:
             self.vel_y = -11
             self.jump = False
             self.in_air = True
@@ -110,25 +110,30 @@ class Soldier(pygame.sprite.Sprite):
             dy = 300 - self.rect.bottom
             self.in_air = False
 
-
         self.rect.x += dx
         self.rect.y += dy
-
 
     def shoot(self, bullet_group):
         if self.shoot_cooldown == 0 and self.ammo > 0:
             self.shoot_cooldown = 20
-            bullet = Bullet(self.rect.centerx + (0.75 * self.rect.size[0] * self.direction),
+            direction = 1
+            if self.moving_left:
+                direction = -1
+            bullet = Bullet(self.rect.centerx + (0.75 * self.rect.size[0] * direction),
                             self.rect.centery,
-                            self.direction)
+                            direction)
             bullet_group.add(bullet)
             # when it shoots it will reduce by 1
             self.ammo -= 1
-            #bullet_noise.play()
+            # bullet_noise.play()
 
-
-
-
+    def throw_grenade(self, grenade_group):
+        self.grenade_thrown = True
+        self.num_grenades -= 1
+        grenade = Grenade(self.rect.centerx + (0.5 * self.rect.size[0] * self.direction),
+                          self.rect.top,
+                          self.direction)
+        grenade_group.add(grenade)
     def ai(self, player, bullet_group):  # making zombies move by itself
 
         if self.alive and player.alive:
@@ -145,9 +150,8 @@ class Soldier(pygame.sprite.Sprite):
             else:
                 if self.idling == False:
                     self.move()
-                    #added boundaries for the zombies
-                    print(f"{self.char_type}: {self.rect.right}, screen width: {settings.SCREEN_WIDTH}")
-                    if self.rect.right >= (settings.SCREEN_WIDTH-15):
+                    # added boundaries for the zombies
+                    if self.rect.right >= (settings.SCREEN_WIDTH - 15):
                         self.moving_left = True
                         self.moving_right = False
                     if self.rect.left <= 2:
@@ -190,5 +194,5 @@ class Soldier(pygame.sprite.Sprite):
             self.alive = False
             self.update_action(3)
 
-    def draw(self,  screen):
+    def draw(self, screen):
         screen.blit(pygame.transform.flip(self.image, self.moving_left, False), self.rect)
