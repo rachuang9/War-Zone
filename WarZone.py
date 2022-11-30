@@ -5,8 +5,9 @@ from soldier import Soldier
 from explosion import Explosion
 from grenade import Grenade
 from healthbar import HealthBar
+from itembox import ItemBox
 
-# from itembox import ItemBox
+from random import randint, choice
 
 # Hello from Dr. Donnal!
 mixer.init()
@@ -60,17 +61,13 @@ enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
-# itembox_group = pygame.sprite.Group()
+itembox_group = pygame.sprite.Group()
 
-# # temp create item boxes
-#
-# itembox = ItemBox('Health', 100, 260)
-# itembox_group.add(itembox)
-# itembox = ItemBox('Ammo', 400, 260)
-# itembox_group.add(itembox)
-# itembox = ItemBox('Grenade', 500, 260)
-# itembox_group.add(itembox)
+# temp create item boxes
 
+for i in range(randint(2, 5)):
+    itembox = ItemBox(choice(['Health', 'Ammo', 'Grenade']))
+    itembox_group.add(itembox)
 
 #
 enemy = Soldier('enemy', 500, 200, 0.6, 1.5, 20, 0)
@@ -120,10 +117,15 @@ while run:
             if event.key == pygame.K_SPACE:
                 player.shooting = False
 
+    # if randint(0, 5000) < 10:
+    #     itembox_group.add(ItemBox('Ammo'))
+    #     print("luck you!")
+
     # update game objects
     bullet_group.update()
     grenade_group.update(player, explosion_group, enemy_group)
     explosion_group.update()
+    itembox_group.update(player)
     player.update(bullet_group, grenade_group)
     for enemy in enemy_group:
         enemy.ai(player, bullet_group)
@@ -144,7 +146,7 @@ while run:
     bullet_group.draw(screen)
     grenade_group.draw(screen)
     explosion_group.draw(screen)
-    # itembox_group.draw(screen)
+    itembox_group.draw(screen)
     pygame.display.flip()
     clock.tick(settings.FPS)
 
