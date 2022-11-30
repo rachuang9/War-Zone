@@ -1,37 +1,39 @@
 import pygame
-from settings import Settings
-TILE_SIZE = 64
-WINDOW_SIZE = 10 * TILE_SIZE
-clock = pygame.time.Clock()
-FPS = 60
-pygame.init()
 
-screen = pygame.display.set_mode((WINDOW_SIZE, WINDOW_SIZE))
-pygame.display.set_caption("War Zone")
-sand = pygame.image.load("images/tileSand1.png")
-view = pygame.image.load('images/background.png')
-sand_rect = sand.get_rect()
+
+SCREEN_WIDTH = 800
+SCREEN_Height = int(SCREEN_WIDTH * 0.8)
+
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_Height))
 screen_rect = screen.get_rect()
 
-num_tiles = screen_rect.width // sand_rect.width
+GRAVITY = 0.55
+TILE_SIZE = 40
+
+# define colors
+BG = (144, 201, 120)
+RED = (255, 0, 0,)
+WHITE = (255, 255, 255)
+GREEN = (0, 255, 0)
+BLACK = (0, 0, 0)
+
+# define font
+font = pygame.font.SysFont('Futura', 30)
 
 class Background:
-    def __init__(self):
-        self.settings = Settings
-        self.view = pygame.image.load('images/background.png')
-        self.rect = self.view.get_rect()
-        self.rect.top = self.screen_rect.top
-        self.BG = (144,201,120)
-    def draw_background(self):
-        width = pygame.image.load('images/background.png')
-        for y in range(num_tiles):
-            for x in range(num_tiles):
-                screen.blit(sand, (x * sand_rect.width, y * sand_rect.height))
-        for x in range(5):
-            screen.blit(self.veiw, ((x * width) - bg_scroll 0.5, 0))
+    def draw_text(text, font, tet_col, x, y):
+        img = font.render(text, True, tet_col)
+        screen.blit(img, (x, y))
 
 
+    def draw_bg():
+        screen.fill(BG)
+        pygame.draw.line(screen, RED, (0, 300), (SCREEN_WIDTH, 300))
+        bg_img = pygame.image.load('images/background/city.png')
 
+        tile_2 = pygame.image.load('images/tile/2.png')
+        num_tiles = screen_rect.width // 40
+        for x in range(num_tiles):
+            screen.blit(tile_2, (x * 70, 300))
 
-
-
+        screen.blit(bg_img, (0,1))

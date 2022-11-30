@@ -7,5 +7,6 @@
     <orderEntry type="module" module-name="pirategame" />
     <orderEntry type="module" module-name="jumpshooter" />
     <orderEntry type="module" module-name="alien_invasion" />
+    <orderEntry type="module" module-name="images" />
   </component>
 </module>

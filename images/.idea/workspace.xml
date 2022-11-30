@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="86680c86-076b-41ae-b318-ffad1721705f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../bullets.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../explosion.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../grenade.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../healthbar.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/images.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../itembox.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../soldier.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/War-Zone.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/War-Zone.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../WarZone.py" beforeDir="false" afterPath="$PROJECT_DIR$/../WarZone.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../background.py" beforeDir="false" afterPath="$PROJECT_DIR$/../background.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/../settings.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="2IFLzrr1V0YPn6lfYVgwGVSjKpj" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/m252646/Desktop/EW200/War-Zone/images"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="86680c86-076b-41ae-b318-ffad1721705f" name="Changes" comment="" />
+      <created>1669772649114</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1669772649114</updated>
+    </task>
+    <servers />
+  </component>
+</project>
