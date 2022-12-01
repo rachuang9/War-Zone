@@ -1,9 +1,6 @@
 import pygame
 import settings
-
 from explosion import Explosion
-
-
 
 
 class Grenade(pygame.sprite.Sprite):
@@ -15,7 +12,7 @@ class Grenade(pygame.sprite.Sprite):
         self.vel_y = -11
         self.speed = 7
 
-        #loads the image
+        # loads the image
 
         self.image = pygame.image.load('images/icons/grenade.png').convert_alpha()
         self.rect = self.image.get_rect()

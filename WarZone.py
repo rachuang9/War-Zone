@@ -1,17 +1,18 @@
 import pygame
 import settings
-from pygame import mixer
 from soldier import Soldier
-from explosion import Explosion
-from grenade import Grenade
 from healthbar import HealthBar
 from itembox import ItemBox
-
 from random import randint, choice
+import buttons
+from pygame import mixer
 
-# Hello from Dr. Donnal!
 mixer.init()
 pygame.init()
+
+mixer.music.load('instinct.mp3')
+mixer.music.set_volume(1)
+mixer.music.play()
 
 SCREEN_Height = int(settings.SCREEN_WIDTH * 0.8)
 
@@ -32,6 +33,12 @@ player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 # define font
 font = pygame.font.SysFont('Futura', 30)
 
+# load button images
+start_img = pygame.image.load('images/start.png').convert_alpha()
+
+# create button instance
+start_button = buttons.Button(100, 200, start_img, 0.8)
+
 
 def draw_text(text, font, tet_col, x, y):
     img = font.render(text, True, tet_col)
@@ -40,7 +47,7 @@ def draw_text(text, font, tet_col, x, y):
 
 def draw_bg():
     screen.fill(settings.BG)
-    # too see where I want to put the boundaries
+    # to see where I want to put the boundaries
     pygame.draw.line(screen, settings.RED, (0, 300), (settings.SCREEN_WIDTH, 300))
     pygame.draw.line(screen, settings.BLACK, (2, 0), (2, SCREEN_Height))
     pygame.draw.line(screen, settings.BLACK, (795, 0), (795, SCREEN_Height))
@@ -63,7 +70,7 @@ grenade_group = pygame.sprite.Group()
 explosion_group = pygame.sprite.Group()
 itembox_group = pygame.sprite.Group()
 
-# temp create item boxes
+# create item boxes randomly
 
 for i in range(randint(2, 5)):
     itembox = ItemBox(choice(['Health', 'Ammo', 'Grenade']))
@@ -86,6 +93,11 @@ run = True
 mouse_pressed = False
 while run:
 
+    # for the button to draw
+
+    if start_button.draw(screen):
+        print('Start')
+
     # check for user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -105,6 +117,7 @@ while run:
 
         # assume we aren't throwing a grenade this frame
         player.throwing_grenade = False
+
         if event.type == pygame.MOUSEBUTTONDOWN:
             # oops, we are, the mouse was clicked
             player.throwing_grenade = True
@@ -117,9 +130,10 @@ while run:
             if event.key == pygame.K_SPACE:
                 player.shooting = False
 
-    # if randint(0, 5000) < 10:
-    #     itembox_group.add(ItemBox('Ammo'))
-    #     print("luck you!")
+    if randint(0, 5000) < 10:
+        itembox_group.add(ItemBox('Ammo'))
+        itembox_group.add(ItemBox('Health'))
+        itembox_group.add(ItemBox('Grenade'))
 
     # update game objects
     bullet_group.update()
@@ -127,6 +141,7 @@ while run:
     explosion_group.update()
     itembox_group.update(player)
     player.update(bullet_group, grenade_group)
+
     for enemy in enemy_group:
         enemy.ai(player, bullet_group)
         enemy.update(bullet_group, 0)
@@ -147,6 +162,7 @@ while run:
     grenade_group.draw(screen)
     explosion_group.draw(screen)
     itembox_group.draw(screen)
+
     pygame.display.flip()
     clock.tick(settings.FPS)
 

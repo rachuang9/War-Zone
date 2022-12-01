@@ -1,5 +1,9 @@
 import pygame
 import settings
+from pygame import mixer
+mixer.init()
+explosion_noise = pygame.mixer.Sound('explosion.mp3')
+explosion_noise.set_volume(.07)
 
 class Explosion(pygame.sprite.Sprite):
     def __init__(self, x, y, scale):
@@ -22,8 +26,10 @@ class Explosion(pygame.sprite.Sprite):
         if self.counter >= settings.EXPLOSION_SPEED:
             self.counter = 0
             self.frame_index += 1
+            explosion_noise.play()
             # if the animation is complete then delete it
             if self.frame_index >= len(self.images):
                 self.kill()
+
             else:
                 self.image = self.images[self.frame_index]

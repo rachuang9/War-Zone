@@ -1,15 +1,13 @@
 import pygame
-from pygame import mixer
 import os
 import settings
 import random
 from bullets import Bullet
 from grenade import Grenade
-
-
-# mixer.init()
-# bullet_noise = pygame.mixer.Sound('sound/shot.wav')
-# bullet_noise.set_volume(.05)
+from pygame import mixer
+mixer.init()
+bullet_noise = pygame.mixer.Sound('shot.mp3')
+bullet_noise.set_volume(.04)
 
 class Soldier(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed, ammo, num_grenades):
@@ -125,7 +123,10 @@ class Soldier(pygame.sprite.Sprite):
             bullet_group.add(bullet)
             # when it shoots it will reduce by 1
             self.ammo -= 1
-            # bullet_noise.play()
+            #recieved assistance from Riley Haugen
+            if self.shoot:
+                bullet_noise.play()
+
 
     def throw_grenade(self, grenade_group):
         self.grenade_thrown = True
@@ -134,6 +135,7 @@ class Soldier(pygame.sprite.Sprite):
                           self.rect.top,
                           self.direction)
         grenade_group.add(grenade)
+
     def ai(self, player, bullet_group):  # making zombies move by itself
 
         if self.alive and player.alive:
