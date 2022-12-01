@@ -1,10 +1,12 @@
 import pygame
 import settings
+import os
+from pygame.locals import *
 from soldier import Soldier
 from healthbar import HealthBar
 from itembox import ItemBox
 from random import randint, choice
-import buttons
+
 from pygame import mixer
 
 mixer.init()
@@ -33,11 +35,17 @@ player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 # define font
 font = pygame.font.SysFont('Futura', 30)
 
-# load button images
-start_img = pygame.image.load('images/start.png').convert_alpha()
 
-# create button instance
-start_button = buttons.Button(100, 200, start_img, 0.8)
+def text_format(message, textFont, textSize, textColor):
+    newFont = pygame.font.Font(textFont, textSize)
+    newText = newFont.render(message, 0, textColor)
+
+    return newText
+
+
+def main_menu():
+    menu = True
+    selected = "start"
 
 
 def draw_text(text, font, tet_col, x, y):
@@ -47,11 +55,6 @@ def draw_text(text, font, tet_col, x, y):
 
 def draw_bg():
     screen.fill(settings.BG)
-    # to see where I want to put the boundaries
-    pygame.draw.line(screen, settings.RED, (0, 300), (settings.SCREEN_WIDTH, 300))
-    pygame.draw.line(screen, settings.BLACK, (2, 0), (2, SCREEN_Height))
-    pygame.draw.line(screen, settings.BLACK, (795, 0), (795, SCREEN_Height))
-
     bg_img = pygame.image.load('images/background/city.png')
 
     tile_2 = pygame.image.load('images/tile/2.png')
@@ -92,11 +95,28 @@ health_bar = HealthBar(10, 10, player.health, player.health)
 run = True
 mouse_pressed = False
 while run:
+    # Main Menu UI
+    screen.fill(settings.GREEN)
+    title = text_format("Sourcecodester", font, 90, settings.YELLOW)
+    if selected == "start":
+        text_start = text_format("START", font, 75, settings.WHITE)
+    else:
+        text_start = text_format("START", font, 75, settings.BLACK)
+    if selected == "quit":
+        text_quit = text_format("QUIT", font, 75, settings.WHITE)
+    else:
+        text_quit = text_format("QUIT", font, 75, settings.BLACK)
 
-    # for the button to draw
+    title_rect = title.get_rect()
+    start_rect = text_start.get_rect()
+    quit_rect = text_quit.get_rect()
 
-    if start_button.draw(screen):
-        print('Start')
+    # Main Menu Text
+    screen.blit(title, (settings.SCREEN_WIDTH / 2 - (title_rect[2] / 2), 80))
+    screen.blit(text_start, (settings.SCREEN_WIDTH / 2 - (start_rect[2] / 2), 300))
+    screen.blit(text_quit, (settings.SCREEN_WIDTH / 2 - (quit_rect[2] / 2), 360))
+    pygame.display.update()
+    clock.tick(settings.FPS)
 
     # check for user input
     for event in pygame.event.get():
