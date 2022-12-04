@@ -1,13 +1,12 @@
 import pygame
 import settings
-import os
-from pygame.locals import *
 from soldier import Soldier
 from healthbar import HealthBar
 from itembox import ItemBox
 from random import randint, choice
-
 from pygame import mixer
+import gameover
+import buttons
 
 mixer.init()
 pygame.init()
@@ -30,22 +29,19 @@ clock = pygame.time.Clock()
 shoot = False
 grenade = False
 grenade_thrown = False
+clicked = False
+start_game = False
+start_intro = False
 
 player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 # define font
 font = pygame.font.SysFont('Futura', 30)
 
-
-def text_format(message, textFont, textSize, textColor):
-    newFont = pygame.font.Font(textFont, textSize)
-    newText = newFont.render(message, 0, textColor)
-
-    return newText
-
-
-def main_menu():
-    menu = True
-    selected = "start"
+#loading the images for the buttons
+start_img = pygame.image.load('images/button_start.png')
+exit_img = pygame.image.load('images/button_exit.png')
+instruction_img = pygame.image.load('images/button_instruction.png')
+Mainmenu_title = pygame.image.load('images/war-zone.png').convert_alpha()
 
 
 def draw_text(text, font, tet_col, x, y):
@@ -56,7 +52,6 @@ def draw_text(text, font, tet_col, x, y):
 def draw_bg():
     screen.fill(settings.BG)
     bg_img = pygame.image.load('images/background/city.png')
-
     tile_2 = pygame.image.load('images/tile/2.png')
     num_tiles = screen_rect.width // 40
     for x in range(num_tiles):
@@ -92,31 +87,14 @@ enemy_group.add(enemy2)
 enemy_group.add(enemy)
 health_bar = HealthBar(10, 10, player.health, player.health)
 
+# creating the button giving the width, height, image and the scale
+start_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 - 20, start_img, .6)
+exit_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 + 60, exit_img, .6)
+instruction_button = buttons.Button(settings.SCREEN_WIDTH // 3 + 66, SCREEN_Height // 2.5 - 30, instruction_img, .6)
+
 run = True
 mouse_pressed = False
 while run:
-    # Main Menu UI
-    screen.fill(settings.GREEN)
-    title = text_format("Sourcecodester", font, 90, settings.YELLOW)
-    if selected == "start":
-        text_start = text_format("START", font, 75, settings.WHITE)
-    else:
-        text_start = text_format("START", font, 75, settings.BLACK)
-    if selected == "quit":
-        text_quit = text_format("QUIT", font, 75, settings.WHITE)
-    else:
-        text_quit = text_format("QUIT", font, 75, settings.BLACK)
-
-    title_rect = title.get_rect()
-    start_rect = text_start.get_rect()
-    quit_rect = text_quit.get_rect()
-
-    # Main Menu Text
-    screen.blit(title, (settings.SCREEN_WIDTH / 2 - (title_rect[2] / 2), 80))
-    screen.blit(text_start, (settings.SCREEN_WIDTH / 2 - (start_rect[2] / 2), 300))
-    screen.blit(text_quit, (settings.SCREEN_WIDTH / 2 - (quit_rect[2] / 2), 360))
-    pygame.display.update()
-    clock.tick(settings.FPS)
 
     # check for user input
     for event in pygame.event.get():
@@ -150,51 +128,81 @@ while run:
             if event.key == pygame.K_SPACE:
                 player.shooting = False
 
-    if randint(0, 5000) < 10:
-        itembox_group.add(ItemBox('Ammo'))
-        itembox_group.add(ItemBox('Health'))
-        itembox_group.add(ItemBox('Grenade'))
+    # making the main menu
+    if start_game == False:
+        screen.fill(settings.BG)
+        screen.blit(Mainmenu_title, (290, 100))
+        if start_button.draw(screen):
+            start_game = True
+            start_intro = True
+        if exit_button.draw(screen):
+            run = False
+        if instruction_button.draw(screen): #cannot click on button to show the message
+            text = font.render('Instructions: Using the left and right keys to move left and right'
+                               'Use the upper arrow key to jump. Use the space bar to shoot bullet. Click on the '
+                               'mouse to launch grenades', True, settings.RED, settings.BLUE)
+            textRect = text.get_rect()
+            textRect.center = (settings.SCREEN_WIDTH // 2, SCREEN_Height // 2)
 
-    # update game objects
-    bullet_group.update()
-    grenade_group.update(player, explosion_group, enemy_group)
-    explosion_group.update()
-    itembox_group.update(player)
-    player.update(bullet_group, grenade_group)
 
-    for enemy in enemy_group:
-        enemy.ai(player, bullet_group)
-        enemy.update(bullet_group, 0)
 
-    # draw the game screen
-    draw_bg()
-    draw_text(f'Ammo:{player.ammo} ', font, settings.WHITE, 10, 35)
-    draw_text('Grenade: ', font, settings.WHITE, 10, 60)
-    # shows grenades in pictures rather than in numbers
-    for x in range(player.num_grenades):
-        screen.blit(pygame.image.load('images/icons/grenade.png').convert_alpha(),
-                    (110 + (x * 13), 55))
 
-    health_bar.draw(player.health, screen)
-    player.draw(screen)
-    enemy_group.draw(screen)
-    bullet_group.draw(screen)
-    grenade_group.draw(screen)
-    explosion_group.draw(screen)
-    itembox_group.draw(screen)
+    else:
+        draw_bg()
+        draw_text(f'Ammo:{player.ammo} ', font, settings.WHITE, 10, 35)
+        draw_text('Grenade: ', font, settings.WHITE, 10, 60)
+        # shows grenades in pictures rather than in numbers
+        for x in range(player.num_grenades):
+            screen.blit(pygame.image.load('images/icons/grenade.png').convert_alpha(),
+                        (110 + (x * 13), 55))
+
+        if randint(0, 5000) < 10:
+            itembox_group.add(ItemBox('Ammo'))
+            itembox_group.add(ItemBox('Health'))
+            itembox_group.add(ItemBox('Grenade'))
+
+        # update game objects
+        bullet_group.update()
+        grenade_group.update(player, explosion_group, enemy_group)
+        explosion_group.update()
+        itembox_group.update(player)
+        player.update(bullet_group, grenade_group)
+
+        for enemy in enemy_group:
+            enemy.ai(player, bullet_group)
+            enemy.update(bullet_group, 0)
+
+        # draw the game screen
+
+        health_bar.draw(player.health, screen)
+        player.draw(screen)
+        enemy_group.draw(screen)
+        bullet_group.draw(screen)
+        grenade_group.draw(screen)
+        explosion_group.draw(screen)
+        itembox_group.draw(screen)
 
     pygame.display.flip()
     clock.tick(settings.FPS)
 
     # once collide with player, player will lose their life
+    #fix to display message and make a restart button along with it
     if pygame.sprite.spritecollide(player, bullet_group, True):
         if player.alive:
             player.health -= 10
+        if player.alive == 0:
+            run = False
+            win = True
+            gameover.end.display_lose_message()
 
     # once the enemy is collided with the bullet of a num_grenades it will die
     for enemy in enemy_group:
         if pygame.sprite.spritecollide(enemy, bullet_group, True):
             if enemy.alive:
                 enemy.health -= 25
+            if enemy.alive == 0:
+                run = False
+                win = False
+                gameover.end.display_win_message()
 
 pygame.quit()

@@ -81,9 +81,10 @@ class Soldier(pygame.sprite.Sprite):
         # reset movement variables
         dx = 0
         dy = 0
-        # assign movement variables and adding boundries so the enemies will not go over the screen
+        # assign movement variables
         if self.moving_left:
             dx = -self.speed
+
 
         elif self.moving_right:
             dx = self.speed
@@ -110,6 +111,10 @@ class Soldier(pygame.sprite.Sprite):
 
         self.rect.x += dx
         self.rect.y += dy
+        if self.rect.x <= 0:
+            self.rect.x = 0
+        if self.rect.right >= settings.SCREEN_WIDTH:
+            self.rect.x = settings.SCREEN_WIDTH
 
     def shoot(self, bullet_group):
         if self.shoot_cooldown == 0 and self.ammo > 0:
