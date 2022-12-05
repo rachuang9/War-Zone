@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 import settings
 from soldier import Soldier
@@ -5,7 +7,7 @@ from healthbar import HealthBar
 from itembox import ItemBox
 from random import randint, choice
 from pygame import mixer
-import gameover
+from screenmessage import ScreenMessage
 import buttons
 
 mixer.init()
@@ -32,18 +34,15 @@ grenade_thrown = False
 clicked = False
 start_game = False
 start_intro = False
-show_instructions = False
 
 player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 # define font
 font = pygame.font.SysFont('Futura', 30)
 
-#loading the images for the buttons
+# loading the images for the buttons
 start_img = pygame.image.load('images/button_start.png')
 exit_img = pygame.image.load('images/button_exit.png')
-instruction_img = pygame.image.load('images/button_instruction.png')
 Mainmenu_title = pygame.image.load('images/war-zone.png').convert_alpha()
-instruction = pygame.image.load('images/instructions.png')
 
 
 def draw_text(text, font, tet_col, x, y):
@@ -92,16 +91,33 @@ health_bar = HealthBar(10, 10, player.health, player.health)
 # creating the button giving the width, height, image and the scale
 start_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 - 20, start_img, .6)
 exit_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 + 60, exit_img, .6)
-instruction_button = buttons.Button(settings.SCREEN_WIDTH // 3 + 66, SCREEN_Height // 2.5 - 30, instruction_img, .6)
 
 run = True
 mouse_pressed = False
+
+screen_message = ScreenMessage(screen_rect.center, "Click to play, q to quit", 50)
+screen_message.display(screen)
+pygame.display.flip()
+while run:
+    # making the main menu
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            run = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_q:
+                sys.exit()
+
+
+gameover_message = "You quit"
+run = True
 while run:
 
     # check for user input
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 player.moving_left = True
@@ -130,87 +146,71 @@ while run:
             if event.key == pygame.K_SPACE:
                 player.shooting = False
 
-    # making the main menu
-    if start_game == False and show_instructions == False:
-        screen.fill(settings.BG)
-        screen.blit(Mainmenu_title, (290, 100))
+    draw_bg()
+    draw_text(f'Ammo:{player.ammo} ', font, settings.WHITE, 10, 35)
+    draw_text('Grenade: ', font, settings.WHITE, 10, 60)
+    # shows grenades in pictures rather than in numbers
+    for x in range(player.num_grenades):
+        screen.blit(pygame.image.load('images/icons/grenade.png').convert_alpha(),
+                    (110 + (x * 13), 55))
 
-        if start_button.draw(screen):
-            start_game = True
-            start_intro = True
-            show_instructions = False
-        if exit_button.draw(screen):
-            run = False
-        if instruction_button.draw(screen): #cannot click on button to show the message
-            show_instructions = True
-            start_intro = False
-            start_game = False
-            screen.blit(instruction, (80, 60))
+    if randint(0, 5000) < 10:
+        itembox_group.add(ItemBox('Ammo'))
+        itembox_group.add(ItemBox('Health'))
+        itembox_group.add(ItemBox('Grenade'))
 
+    # update game objects
+    bullet_group.update()
+    grenade_group.update(player, explosion_group, enemy_group)
+    explosion_group.update()
+    itembox_group.update(player)
+    player.update(bullet_group, grenade_group)
 
+    for enemy in enemy_group:
+        enemy.ai(player, bullet_group)
+        enemy.update(bullet_group, 0)
 
+    # draw the game screen
 
-
-
-
-
-
-    else:
-        draw_bg()
-        draw_text(f'Ammo:{player.ammo} ', font, settings.WHITE, 10, 35)
-        draw_text('Grenade: ', font, settings.WHITE, 10, 60)
-        # shows grenades in pictures rather than in numbers
-        for x in range(player.num_grenades):
-            screen.blit(pygame.image.load('images/icons/grenade.png').convert_alpha(),
-                        (110 + (x * 13), 55))
-
-        if randint(0, 5000) < 10:
-            itembox_group.add(ItemBox('Ammo'))
-            itembox_group.add(ItemBox('Health'))
-            itembox_group.add(ItemBox('Grenade'))
-
-        # update game objects
-        bullet_group.update()
-        grenade_group.update(player, explosion_group, enemy_group)
-        explosion_group.update()
-        itembox_group.update(player)
-        player.update(bullet_group, grenade_group)
-
-        for enemy in enemy_group:
-            enemy.ai(player, bullet_group)
-            enemy.update(bullet_group, 0)
-
-        # draw the game screen
-
-        health_bar.draw(player.health, screen)
-        player.draw(screen)
-        enemy_group.draw(screen)
-        bullet_group.draw(screen)
-        grenade_group.draw(screen)
-        explosion_group.draw(screen)
-        itembox_group.draw(screen)
+    health_bar.draw(player.health, screen)
+    player.draw(screen)
+    enemy_group.draw(screen)
+    bullet_group.draw(screen)
+    grenade_group.draw(screen)
+    explosion_group.draw(screen)
+    itembox_group.draw(screen)
 
     pygame.display.flip()
     clock.tick(settings.FPS)
 
     # once collide with player, player will lose their life
-    #fix to display message and make a restart button along with it
+    # fix to display message and make a restart button along with it
     if pygame.sprite.spritecollide(player, bullet_group, True):
         if player.alive:
             player.health -= 10
-        if player.alive == 0:
+        if player.health <= 0:
             run = False
-            win = True
-            gameover.end.display_lose_message()
+            gameover_message = "YOU LOSE"
 
     # once the enemy is collided with the bullet of a num_grenades it will die
     for enemy in enemy_group:
         if pygame.sprite.spritecollide(enemy, bullet_group, True):
             if enemy.alive:
                 enemy.health -= 25
-            if enemy.alive == 0:
+            if enemy.health <= 0:
                 run = False
-                win = False
-                gameover.end.display_win_message()
+                gameover_message = "YOU WIN"
+# making the game over screen
+
+screen_message = ScreenMessage(screen_rect.center, gameover_message)
+screen_message.display(screen)
+pygame.display.flip()
+run = True
+
+while run:
+    # making the main menu
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            sys.exit()
 
 pygame.quit()
