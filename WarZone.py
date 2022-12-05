@@ -32,6 +32,7 @@ grenade_thrown = False
 clicked = False
 start_game = False
 start_intro = False
+show_instructions = False
 
 player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 # define font
@@ -42,6 +43,7 @@ start_img = pygame.image.load('images/button_start.png')
 exit_img = pygame.image.load('images/button_exit.png')
 instruction_img = pygame.image.load('images/button_instruction.png')
 Mainmenu_title = pygame.image.load('images/war-zone.png').convert_alpha()
+instruction = pygame.image.load('images/instructions.png')
 
 
 def draw_text(text, font, tet_col, x, y):
@@ -129,20 +131,26 @@ while run:
                 player.shooting = False
 
     # making the main menu
-    if start_game == False:
+    if start_game == False and show_instructions == False:
         screen.fill(settings.BG)
         screen.blit(Mainmenu_title, (290, 100))
+
         if start_button.draw(screen):
             start_game = True
             start_intro = True
+            show_instructions = False
         if exit_button.draw(screen):
             run = False
         if instruction_button.draw(screen): #cannot click on button to show the message
-            text = font.render('Instructions: Using the left and right keys to move left and right'
-                               'Use the upper arrow key to jump. Use the space bar to shoot bullet. Click on the '
-                               'mouse to launch grenades', True, settings.RED, settings.BLUE)
-            textRect = text.get_rect()
-            textRect.center = (settings.SCREEN_WIDTH // 2, SCREEN_Height // 2)
+            show_instructions = True
+            start_intro = False
+            start_game = False
+            screen.blit(instruction, (80, 60))
+
+
+
+
+
 
 
 
