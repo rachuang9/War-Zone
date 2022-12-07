@@ -3,6 +3,7 @@ import settings
 
 
 class Bullet(pygame.sprite.Sprite):
+    # init the bullet to show on the screen and disappear after shooting
     def __init__(self, x, y, direction):
         super().__init__()
         self.speed = 10

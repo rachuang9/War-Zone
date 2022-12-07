@@ -8,17 +8,19 @@ from itembox import ItemBox
 from random import randint, choice
 from pygame import mixer
 from screenmessage import ScreenMessage
-import buttons
+
 
 mixer.init()
 pygame.init()
 
-mixer.music.load('instinct.mp3')
+# creating a background music
+
+mixer.music.load('sound/instinct.mp3')
 mixer.music.set_volume(1)
 mixer.music.play()
 
+# Creating a screen to display and screen height
 SCREEN_Height = int(settings.SCREEN_WIDTH * 0.8)
-
 screen = pygame.display.set_mode((settings.SCREEN_WIDTH, SCREEN_Height))
 screen_rect = screen.get_rect()
 pygame.display.set_caption('War Zone')
@@ -27,7 +29,6 @@ pygame.display.set_caption('War Zone')
 clock = pygame.time.Clock()
 
 # define player action variables:
-
 shoot = False
 grenade = False
 grenade_thrown = False
@@ -35,16 +36,13 @@ clicked = False
 start_game = False
 start_intro = False
 
+# setting the player's variables
 player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
+
 # define font
 font = pygame.font.SysFont('Futura', 30)
 
-# loading the images for the buttons
-start_img = pygame.image.load('images/button_start.png')
-exit_img = pygame.image.load('images/button_exit.png')
-Mainmenu_title = pygame.image.load('images/war-zone.png').convert_alpha()
-
-
+# drawing the background of the game
 def draw_text(text, font, tet_col, x, y):
     img = font.render(text, True, tet_col)
     screen.blit(img, (x, y))
@@ -62,7 +60,6 @@ def draw_bg():
 
 
 # create sprite group
-
 enemy_group = pygame.sprite.Group()
 bullet_group = pygame.sprite.Group()
 grenade_group = pygame.sprite.Group()
@@ -75,7 +72,7 @@ for i in range(randint(2, 5)):
     itembox = ItemBox(choice(['Health', 'Ammo', 'Grenade']))
     itembox_group.add(itembox)
 
-#
+# Settings the enemy's variables for it to move on its own
 enemy = Soldier('enemy', 500, 200, 0.6, 1.5, 20, 0)
 enemy.moving_right = True
 enemy.moving_left = False
@@ -88,18 +85,14 @@ enemy_group.add(enemy2)
 enemy_group.add(enemy)
 health_bar = HealthBar(10, 10, player.health, player.health)
 
-# creating the button giving the width, height, image and the scale
-start_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 - 20, start_img, .6)
-exit_button = buttons.Button(settings.SCREEN_WIDTH // 2 - 60, SCREEN_Height // 2 + 60, exit_img, .6)
-
+# making the main menu
 run = True
 mouse_pressed = False
-
 screen_message = ScreenMessage(screen_rect.center, "Click to play, q to quit", 50)
 screen_message.display(screen)
 pygame.display.flip()
 while run:
-    # making the main menu
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
@@ -109,7 +102,7 @@ while run:
             if event.key == pygame.K_q:
                 sys.exit()
 
-
+# Creating a game over screen message at the end and checking for player's event
 gameover_message = "You quit"
 run = True
 while run:
@@ -171,7 +164,6 @@ while run:
         enemy.update(bullet_group, 0)
 
     # draw the game screen
-
     health_bar.draw(player.health, screen)
     player.draw(screen)
     enemy_group.draw(screen)
@@ -183,8 +175,7 @@ while run:
     pygame.display.flip()
     clock.tick(settings.FPS)
 
-    # once collide with player, player will lose their life
-    # fix to display message and make a restart button along with it
+    # once collide with player, player will lose their live
     if pygame.sprite.spritecollide(player, bullet_group, True):
         if player.alive:
             player.health -= 10
@@ -200,15 +191,16 @@ while run:
             if enemy.health <= 0:
                 run = False
                 gameover_message = "YOU WIN"
-# making the game over screen
 
+# making the game over screen to update
 screen_message = ScreenMessage(screen_rect.center, gameover_message)
 screen_message.display(screen)
 pygame.display.flip()
 run = True
 
+# allowing it to exit out of the game
 while run:
-    # making the main menu
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()

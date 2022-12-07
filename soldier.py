@@ -6,7 +6,7 @@ from bullets import Bullet
 from grenade import Grenade
 from pygame import mixer
 mixer.init()
-bullet_noise = pygame.mixer.Sound('shot.mp3')
+bullet_noise = pygame.mixer.Sound('sound/shot.mp3')
 bullet_noise.set_volume(.04)
 
 class Soldier(pygame.sprite.Sprite):
@@ -35,13 +35,12 @@ class Soldier(pygame.sprite.Sprite):
         self.animation_list = []
         self.frame_index = 0
         self.update_time = pygame.time.get_ticks()
-        # create ai specific varaibles
+        # create specific variables
         self.move_counter = 0
-        # self.vision = pygame.Rect(0, 0, 150, 20)
         # idling is random occurance
         self.idling = False
         self.idling_counter = 0
-
+        # making a list to update the animations
         animation_types = ['stand', 'walk', 'jump', 'fall']
         for animation in animation_types:
             temp_list = []
@@ -56,6 +55,7 @@ class Soldier(pygame.sprite.Sprite):
         self.rect.center = (x, y)
 
     def update(self, bullet_group, grenade_group):
+        # updates the action of the solider after a specific animation is complete
         if self.in_air:
             self.update_action(2)  # make it jump
         elif self.moving_left or self.moving_right:
@@ -84,11 +84,8 @@ class Soldier(pygame.sprite.Sprite):
         # assign movement variables
         if self.moving_left:
             dx = -self.speed
-
-
         elif self.moving_right:
             dx = self.speed
-
         else:
             dx = 0  # don't move, neither is true
 
@@ -99,8 +96,8 @@ class Soldier(pygame.sprite.Sprite):
             self.vel_y = -11
             self.jump = False
             self.in_air = True
-        # giving the parabolic shape of the gravity
 
+        # giving the parabolic shape of the gravity
         self.vel_y += settings.GRAVITY
         dy += self.vel_y
 
@@ -128,10 +125,9 @@ class Soldier(pygame.sprite.Sprite):
             bullet_group.add(bullet)
             # when it shoots it will reduce by 1
             self.ammo -= 1
-            #recieved assistance from Riley Haugen
+            # recieved assistance from Riley Haugen
             if self.shoot:
                 bullet_noise.play()
-
 
     def throw_grenade(self, grenade_group):
         self.grenade_thrown = True
@@ -141,23 +137,22 @@ class Soldier(pygame.sprite.Sprite):
                           self.direction)
         grenade_group.add(grenade)
 
-    def ai(self, player, bullet_group):  # making zombies move by itself
-
+    def ai(self, player, bullet_group):
+        # making enemy move by itself and checking if they are dead or alive
         if self.alive and player.alive:
             if self.idling == False and random.randint(1, 200) == 1:
                 self.update_action(0)
                 self.idling = True
                 self.idling_counter = 50
-            # check if the ai is near the player
+            # check if the enemy is near the player
             if self.rect.colliderect(player.rect):
                 # stop running and face the player
                 self.update_action(0)
                 self.shoot(bullet_group)
-
             else:
                 if self.idling == False:
                     self.move()
-                    # added boundaries for the zombies
+                    # added boundaries for the enemies on the sides of the screen
                     if self.rect.right >= (settings.SCREEN_WIDTH - 15):
                         self.moving_left = True
                         self.moving_right = False
@@ -173,7 +168,6 @@ class Soldier(pygame.sprite.Sprite):
 
     def update_animation(self):
         # time animation to move the picture
-
         ANIMATION_COOLDOWN = 100
         # update image depending on current frame
         self.image = self.animation_list[self.action][self.frame_index]
@@ -190,7 +184,7 @@ class Soldier(pygame.sprite.Sprite):
         # helps check if the new action is different to the previous one
         if new_action != self.action:
             self.action = new_action
-            # update the aniamation settings
+            # update the animation settings
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
 

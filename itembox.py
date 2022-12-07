@@ -4,6 +4,7 @@ from random import randint
 
 
 class ItemBox(pygame.sprite.Sprite):
+    # init the screen to show health, ammo and grenade supplies
     def __init__(self, item_type):
         super().__init__()
 
@@ -21,7 +22,7 @@ class ItemBox(pygame.sprite.Sprite):
         self.rect.bottom = 300
 
     def update(self, player):
-        # check if the player has picked up the box
+        # check if the player has picked up the box and update the health, ammo and grenade
         if pygame.sprite.collide_rect(self, player):
             # check what kind of box it was
             if self.item_type == 'Health':

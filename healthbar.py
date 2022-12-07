@@ -2,9 +2,8 @@ import pygame
 import settings
 
 
-
-
 class HealthBar():
+    # calling the variables of health
     def __init__(self, x, y, health, max_health):
         self.x = x
         self.y = y

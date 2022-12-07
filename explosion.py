@@ -1,11 +1,14 @@
 import pygame
 import settings
 from pygame import mixer
+
 mixer.init()
-explosion_noise = pygame.mixer.Sound('explosion.mp3')
+explosion_noise = pygame.mixer.Sound('sound/explosion.mp3')
 explosion_noise.set_volume(.07)
 
+
 class Explosion(pygame.sprite.Sprite):
+    # init the screen with the animation of the explosion once a grenade has been launched
     def __init__(self, x, y, scale):
         super().__init__()
         self.images = []

@@ -9,7 +9,7 @@ MAX_LEVEL = 2
 EXPLOSION_SPEED = 4
 FPS = 60
 
-# define colors
+# define colors in settings
 BG = (144, 201, 120)
 RED = (255, 0, 0,)
 WHITE = (255, 255, 255)
@@ -17,15 +17,6 @@ GREEN = (0, 255, 0)
 BLACK = (0, 0, 0)
 GREY = (50, 50, 50)
 BLUE=(0, 0, 255)
-YELLOW=(255, 255, 0)
-        # self.screen_scroll = 0
-        # self.bg_scroll = 0
-        # self.level = 1
-        # self.start_game = False
-        # self.start_intro = False
-        # self.moving_left = False
-        # self.moving_right = False
-        # self.shoot = False
-        # self.num_grenades = False
-        # self.grenade_thrown = False
+YELLOW =(255, 255, 0)
+
 
