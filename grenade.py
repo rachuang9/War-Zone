@@ -6,14 +6,13 @@ from explosion import Explosion
 class Grenade(pygame.sprite.Sprite):
     def __init__(self, x, y, direction):
         super().__init__()
-        # set the gernade timmer
+        # set the grenade timer
         self.timer = 100
-        # sets the velocity for the gernade
+        # sets the velocity for the grenade
         self.vel_y = -11
         self.speed = 7
 
         # loads the image
-
         self.image = pygame.image.load('images/icons/grenade.png').convert_alpha()
         self.rect = self.image.get_rect()
         self.rect.center = (x, y)
@@ -36,7 +35,7 @@ class Grenade(pygame.sprite.Sprite):
         self.rect.x += dx
         self.rect.y += dy
 
-        # countdown timer
+        # countdown timer so it won't shoot to many grenades at once
         self.timer -= 1
         if self.timer <= 0:
             self.kill()
