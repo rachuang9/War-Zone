@@ -5,9 +5,11 @@ import random
 from bullets import Bullet
 from grenade import Grenade
 from pygame import mixer
+
 mixer.init()
 bullet_noise = pygame.mixer.Sound('sound/shot.mp3')
 bullet_noise.set_volume(.04)
+
 
 class Soldier(pygame.sprite.Sprite):
     def __init__(self, char_type, x, y, scale, speed, ammo, num_grenades):
@@ -76,10 +78,8 @@ class Soldier(pygame.sprite.Sprite):
             self.throw_grenade(grenade_group)
             self.throwing_grenade = False
 
-
     def move(self):
         # reset movement variables
-        dx = 0
         dy = 0
         # assign movement variables
         if self.moving_left:

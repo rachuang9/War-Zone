@@ -9,7 +9,6 @@ from random import randint, choice
 from pygame import mixer
 from screenmessage import ScreenMessage
 
-
 mixer.init()
 pygame.init()
 
@@ -41,6 +40,7 @@ player = Soldier('player', 200, 200, 0.6, 5, 20, 5)
 
 # define font
 font = pygame.font.SysFont('Futura', 30)
+
 
 # drawing the background of the game
 def draw_text(text, font, tet_col, x, y):
@@ -128,7 +128,7 @@ while run:
         player.throwing_grenade = False
 
         if event.type == pygame.MOUSEBUTTONDOWN:
-            # oops, we are, the mouse was clicked
+            # allows the player to throw grenades with a mouse click
             player.throwing_grenade = True
 
         if event.type == pygame.KEYUP:
